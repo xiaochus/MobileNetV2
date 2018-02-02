@@ -8,11 +8,10 @@
 
 
 from keras.models import Model
-from keras.layers import Input, Conv2D, AveragePooling2D, Dropout
-from keras.layers import Activation, BatchNormalization, add
+from keras.layers import Input, Conv2D, GlobalAveragePooling2D, Dropout
+from keras.layers import Activation, BatchNormalization, add, Reshape
 from keras.applications.mobilenet import relu6, DepthwiseConv2D
 from keras.utils.vis_utils import plot_model
-
 
 from keras import backend as K
 
@@ -130,11 +129,13 @@ def MobileNetv2(input_shape, k):
     x = _inverted_residual_block(x, 320, (3, 3), t=6, strides=1, n=1)
 
     x = _conv_block(x, 1280, (1, 1), strides=(1, 1))
-    # x = GlobalAveragePooling2D()(x)
-    x = AveragePooling2D((int(x.shape[1]), int(x.shape[2])))(x)
-    x = Dropout(0.3)(x)
+    x = GlobalAveragePooling2D()(x)
+    x = Reshape((1, 1, 1280))(x)
+    x = Dropout(0.3, name='Dropout')(x)
     x = Conv2D(k, (1, 1), padding='same')(x)
-    output = Activation('softmax', name='softmax')(x)
+
+    x = Activation('softmax', name='softmax')(x)
+    output = Reshape((k,))(x)
 
     model = Model(inputs, output)
     plot_model(model, to_file='images/MobileNetv2.png', show_shapes=True)
