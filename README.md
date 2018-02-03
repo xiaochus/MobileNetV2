@@ -50,7 +50,7 @@ python train.py --classes num_classes --batch batch_size --epochs epochs --size 
 The ```.h5``` weight file was saved at model folder. If you want to do fine tune the trained model, you can run the following command. However, it should be noted that the size of the input image should be consistent with the original model.
 
 ```
-python train.py --classes num_classes --batch batch_size --epochs epochs --size image_size --weights weights_path
+python train.py --classes num_classes --batch batch_size --epochs epochs --size image_size --weights weights_path --tclasses pre_classes
 ```
 
 **Parameter explanation**
@@ -60,6 +60,7 @@ python train.py --classes num_classes --batch batch_size --epochs epochs --size 
 - --batch,   The number of train samples per batch.  
 - --epochs,  The number of train iterations.  
 - --weights, Fine tune with other weights.  
+- --tclasses, The number of classes of pre-trained model.
 
 ## Reference
 

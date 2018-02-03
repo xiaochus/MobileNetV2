@@ -40,10 +40,15 @@ def main(argv):
         default=False,
         help="Fine tune with other weights.",
     )
+    parser.add_argument(
+        "--tclasses",
+        default=0,
+        help="The number of classes of pre-trained model.",
+    )
 
     args = parser.parse_args()
 
-    train(int(args.batch), int(args.epochs), int(args.classes), int(args.size), args.weights)
+    train(int(args.batch), int(args.epochs), int(args.classes), int(args.size), args.weights, int(args.tclasses))
 
 
 def generate(batch, size):
@@ -120,7 +125,7 @@ def fine_tune(num_classes, weights, model):
     return model
 
 
-def train(batch, epochs, num_classes, size, weights):
+def train(batch, epochs, num_classes, size, weights, tclasses):
     """Train the model.
 
     # Arguments
@@ -129,13 +134,16 @@ def train(batch, epochs, num_classes, size, weights):
         num_classes, Integer, The number of classes of dataset.
         size: Integer, image size.
         weights, String, The pre_trained model weights.
+        tclasses, Integer, The number of classes of pre-trained model.
     """
 
     train_generator, validation_generator, count1, count2 = generate(batch, size)
 
-    model = MobileNetv2((size, size, 3), num_classes)
     if weights:
+        model = MobileNetv2((size, size, 3), tclasses)
         model = fine_tune(num_classes, weights, model)
+    else:
+        model = MobileNetv2((size, size, 3), num_classes)
 
     rmsprop = RMSprop()
     earlystop = EarlyStopping(monitor='val_acc', patience=10, verbose=0, mode='auto')
@@ -148,6 +156,9 @@ def train(batch, epochs, num_classes, size, weights):
         validation_steps=count2 // batch,
         epochs=epochs,
         callbacks=[earlystop])
+
+    if not os.path.exists('model'):
+        os.makedirs('model')
 
     df = pd.DataFrame.from_dict(hist.history)
     df.to_csv('model/hist.csv', encoding='utf-8', index=False)
