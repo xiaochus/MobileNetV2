@@ -12,13 +12,14 @@ According to the paper: [Inverted Residuals and Linear Bottlenecks Mobile Networ
 
 
 ## MobileNet v2 and inverted residual block architectures
+
 **MobileNet v2:**  
 
 Each line describes a sequence of 1 or more identical (modulo stride) layers, repeated n times. All layers in the same sequence have the same number c of output channels. The first layer of each sequence has a stride s and all others use stride 1. All spatial convolutions use 3 X 3 kernels. The expansion factor t is always applied to the input size.
 
 ![MobileNetV2](/images/net.jpg)
 
-**Residual Block Architectures:**
+**Bottleneck Architectures:**
 
 ![residual block architectures](/images/stru.jpg)
 
@@ -29,17 +30,19 @@ The recommended size of the image in the paper is 224 * 224. The ```data\convert
 
 **The dataset folder structure is as follows:**
 
-	data
-	--train
-	  --class 0
-	  --class 1
-	  ....
-	  --class n
-	--validation
-	  --class 0
-	  --class 1
-	  ....
-	  --class n
+	| - data/
+		| - train/
+	  		| - class 0/
+				| - image.jpg
+					....
+			| - class 1/
+			  ....
+			| - class n/
+		| - validation/
+	  		| - class 0/
+			| - class 1/
+			  ....
+			| - class n/
 
 **Run command below to train the model:**
 
@@ -62,6 +65,22 @@ python train.py --classes num_classes --batch batch_size --epochs epochs --size 
 - --weights, Fine tune with other weights.  
 - --tclasses, The number of classes of pre-trained model.
 
+## Experiment
+
+Due to the limited computational resources, we used cifar-100 dataset to test the model.
+	
+	device: Tesla K80
+	dataset: cifar-100
+	optimizer: Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)  
+	batch_szie: 128 
+
+These are the details for the CIFAR-100 experiment. Although the network did not completely converge, still achieved good accuracy.
+
+| Metrics | Loss | Top-1 Accuracy | Top-5 Accuracy |
+| ------- |------| :------------: | :------------: |
+| cifar-100 | 0.195 | 94.42% | 99.82% |
+
+![evaluate](/images/eva.png)
 ## Reference
 
 	@article{MobileNetv2,  

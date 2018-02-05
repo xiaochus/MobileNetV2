@@ -8,7 +8,7 @@ import pandas as pd
 
 from mobilenet_v2 import MobileNetv2
 
-from keras.optimizers import RMSprop
+from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import EarlyStopping
 from keras.layers import Conv2D, Reshape, Activation
@@ -32,19 +32,16 @@ def main(argv):
         help="The number of train samples per batch.")
     parser.add_argument(
         "--epochs",
-        default=100,
-        help="The number of train iterations.",
-    )
+        default=300,
+        help="The number of train iterations.")
     parser.add_argument(
         "--weights",
         default=False,
-        help="Fine tune with other weights.",
-    )
+        help="Fine tune with other weights.")
     parser.add_argument(
         "--tclasses",
         default=0,
-        help="The number of classes of pre-trained model.",
-    )
+        help="The number of classes of pre-trained model.")
 
     args = parser.parse_args()
 
@@ -145,9 +142,9 @@ def train(batch, epochs, num_classes, size, weights, tclasses):
     else:
         model = MobileNetv2((size, size, 3), num_classes)
 
-    rmsprop = RMSprop()
-    earlystop = EarlyStopping(monitor='val_acc', patience=10, verbose=0, mode='auto')
-    model.compile(loss='categorical_crossentropy', optimizer=rmsprop, metrics=['accuracy'])
+    opt = Adam()
+    earlystop = EarlyStopping(monitor='val_acc', patience=30, verbose=0, mode='auto')
+    model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
     hist = model.fit_generator(
         train_generator,
