@@ -112,7 +112,7 @@ def MobileNetv2(input_shape, k):
     # Arguments
         input_shape: An integer or tuple/list of 3 integers, shape
             of input tensor.
-        k: Integer, numner of classes.
+        k: Integer, number of classes.
     # Returns
         MobileNetv2 model.
     """
