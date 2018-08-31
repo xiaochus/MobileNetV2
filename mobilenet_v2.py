@@ -144,4 +144,4 @@ def MobileNetv2(input_shape, k):
 
 
 if __name__ == '__main__':
-    MobileNetv2((224, 224, 3), 1000)
+    MobileNetv2((224, 224, 3), 100)
