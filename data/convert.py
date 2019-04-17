@@ -23,7 +23,7 @@ def convert():
 
     for i in range(len(X_test)):
         x = X_test[i]
-        y = X_test[i]
+        y = y_test[i]
         path = val + str(y[0])
         x = cv2.resize(x, (224, 224), interpolation=cv2.INTER_CUBIC)
         if not os.path.exists(path):
