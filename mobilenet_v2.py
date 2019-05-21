@@ -9,11 +9,16 @@
 
 from keras.models import Model
 from keras.layers import Input, Conv2D, GlobalAveragePooling2D, Dropout
-from keras.layers import Activation, BatchNormalization, add, Reshape
-from keras.applications.mobilenet import relu6, DepthwiseConv2D
+from keras.layers import Activation, BatchNormalization, Add, Reshape, DepthwiseConv2D
 from keras.utils.vis_utils import plot_model
 
 from keras import backend as K
+
+
+def relu6(x):
+    """Relu 6
+    """
+    return K.relu(x, max_value=6.0)
 
 
 def _conv_block(inputs, filters, kernel, strides):
@@ -74,7 +79,8 @@ def _bottleneck(inputs, filters, kernel, t, s, r=False):
     x = BatchNormalization(axis=channel_axis)(x)
 
     if r:
-        x = add([x, inputs])
+        x = Add()([x, inputs])
+
     return x
 
 
@@ -138,10 +144,11 @@ def MobileNetv2(input_shape, k):
     output = Reshape((k,))(x)
 
     model = Model(inputs, output)
-    plot_model(model, to_file='images/MobileNetv2.png', show_shapes=True)
+    # plot_model(model, to_file='images/MobileNetv2.png', show_shapes=True)
 
     return model
 
 
 if __name__ == '__main__':
-    MobileNetv2((224, 224, 3), 100)
+    model = MobileNetv2((224, 224, 3), 100)
+    print(model.summary())
